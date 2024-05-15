@@ -1,10 +1,12 @@
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PracticasScreen = () => {
   return (
-    <View className="flex-1 items-center justify-center bg-blue-600">
-      <Text className='text-white' >PracticasScreen</Text>
-    </View>
+    <SafeAreaView className="flex-1 items-center justify-center bg-white">
+    <Image source={require('../../../assets/imagenP.jpg')} style={{height:300}}/>
+
+    </SafeAreaView>
   )
 }
 
