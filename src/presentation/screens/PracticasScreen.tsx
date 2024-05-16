@@ -47,7 +47,7 @@ const PracticasScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
       />
-          <Text className='text-black'>{JSON.stringify(valesWithPracticas)}</Text>
+          <Text className='text-black'>{JSON.stringify(valesWithPracticas, null, 2)}</Text>
 
 
       </SafeAreaView>
