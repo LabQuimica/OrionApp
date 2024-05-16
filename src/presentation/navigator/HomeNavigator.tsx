@@ -2,16 +2,24 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import PracticasScreen from '../screens/PracticasScreen';
 import FormularioScreen from '../screens/FormularioScreen';
-const Tab = createBottomTabNavigator();
+import Account from '../components/Account';
 
-export const HomeNavigator = () => {
+const BottomTab = createBottomTabNavigator();
+
+function AccountWrapper({ route }) {
+  const { session } = route.params;
+  return <Account key={session.user.id} session={session} />;
+}
+
+export const HomeNavigator = ({ session }) => {
   return (
-    <Tab.Navigator screenOptions={{
+    <BottomTab.Navigator initialRouteName="Home" screenOptions={{
       headerShown: false
     }}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Practicas" component={PracticasScreen} />
-      <Tab.Screen name="Formulario" component={FormularioScreen} />
-    </Tab.Navigator>
+      <BottomTab.Screen name="Home" component={HomeScreen} initialParams={{ session: session }} />
+      <BottomTab.Screen name="Practicas" component={PracticasScreen} initialParams={{ session: session }} />
+      <BottomTab.Screen name="Formulario" component={FormularioScreen} initialParams={{ session: session }} />
+      <BottomTab.Screen name="Perfil" component={AccountWrapper} initialParams={{ session: session }} />
+    </BottomTab.Navigator>
   );
 }

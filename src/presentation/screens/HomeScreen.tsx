@@ -33,7 +33,7 @@ const HomeScreen = () => {
   }, {});
 
   const eventsForSelectedDate = valesWithPracticas.filter(event => event.fecha === selectedDate);
-  console.log(JSON.stringify(valesWithPracticas))
+  console.log(JSON.stringify(valesWithPracticas, null, 2))
 
   return (
     <SafeAreaView className="flex-1 items-center justify-center bg-white">
@@ -49,6 +49,7 @@ const HomeScreen = () => {
             ...markedDates,
             [selectedDate]: { selected: true, selectedColor: 'blue' },
           }}
+          className=' w-96 h-96'
         />
 
         <Ionicons name="airplane-outline" color={'black'} size={30} />
