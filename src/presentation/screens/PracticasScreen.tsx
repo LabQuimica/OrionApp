@@ -29,7 +29,7 @@ const PracticasScreen = () => {
 
 
   const renderItem = ({ item }) => (
-    <View style={{ padding: 30, backgroundColor:'orange', margin:'10'}}>
+    <View style={{ padding: 30, backgroundColor:'orange'}}>
       <Text >Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
       <Text>Fecha: {item.fecha ?? 'N/A'}</Text>
       
