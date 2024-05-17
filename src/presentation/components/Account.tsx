@@ -3,6 +3,7 @@ import { supabase } from '../../../lib/supabase'
 import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { Session } from '@supabase/supabase-js'
+import Avatar from './Avatar'
 
 export default function Account({ session }: { session: Session }) {
   
@@ -79,7 +80,22 @@ export default function Account({ session }: { session: Session }) {
   }
 
   return (
+
     <View style={styles.container}>
+        <View>
+    {/* Add to the body */}
+    <View>
+      <Avatar
+        size={200}
+        url={avatarUrl}
+        onUpload={(url: string) => {
+          setAvatarUrl(url)
+          updateProfile({ username, website, avatar_url: url })
+        }}
+      />
+    </View>
+    {/* ... */}
+  </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input label="Email" value={session?.user?.email} disabled />
       </View>
