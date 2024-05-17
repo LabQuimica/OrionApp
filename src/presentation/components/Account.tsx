@@ -84,7 +84,7 @@ export default function Account({ session }: { session: Session }) {
     <View style={styles.container}>
         <View>
     {/* Add to the body */}
-    <View>
+    <View style={styles.imagen}>
       <Avatar
         size={200}
         url={avatarUrl}
@@ -135,4 +135,7 @@ const styles = StyleSheet.create({
   mt20: {
     marginTop: 20,
   },
+  imagen: {
+    borderRadius: 100,
+  }
 })
