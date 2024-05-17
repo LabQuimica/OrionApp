@@ -6,7 +6,7 @@
 </p>
 
 ## 🛠️ Abre y ejecuta el proyecto
-Ejecuta ``` npm start ``` o ``` npm expo start ```
+Ejecuta ``` npm start ``` o ``` npm expo start ```.
 Si te marca el error
 ```
 Unknown command: "expo"
@@ -15,9 +15,13 @@ significa que debes instalar expo, esto se hace mediante el comando:
 ```
 npm install expo
 ```
-En caso de que al ejecutar ``` npm start ``` aparezcan algunos archivos en rojo haz lo siguiente
+En caso de que al ejecutar ``` npm start ``` aparezcan algunos archivos en rojo haz lo siguiente:
 ``` 
 ctrl + shift + p -> Reload Windorw
+```
+Para que el usuario pueda seleccionar su foto de perfil debes ejecutar:
+```
+npx expo install expo-image-picker
 ```
 
 ## Autores
