@@ -6,21 +6,18 @@
 </p>
 
 ## 🛠️ Abre y ejecuta el proyecto
-Ejecuta 
-```
-npm start
-```
- o 
- ```
- npm expo start
- ```
-Si te marca el siguiente error
+Ejecuta ``` npm start ``` o ``` npm expo start ```
+Si te marca el error
 ```
 Unknown command: "expo"
 ```
 significa que debes instalar expo, esto se hace mediante el comando:
 ```
 npm install expo
+```
+En caso de que al ejecutar ``` npm start ``` aparezcan algunos archivos en rojo haz lo siguiente
+``` 
+ctrl + shift + p -> Reload Windorw
 ```
 
 ## Autores
