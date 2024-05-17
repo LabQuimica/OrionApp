@@ -39,7 +39,7 @@ export default function FormularioScreen({ session }: { session: Session }) {
         selectedTextColor: '#fff',
         mainColor: "#469ab6",
         textSecondaryColor: "#ffffff",
-        borderColor: 'rgba(122,146,165,0.1)'
+        borderColor: "#080516"
     }
 
     useEffect(() => {
@@ -94,7 +94,7 @@ export default function FormularioScreen({ session }: { session: Session }) {
                 
                 <Controller
                     control={control}
-                    name=""
+                    name="id_usuario"
                     render={({ field: { onChange, value } }) => (
                         <Picker
                             selectedValue={value}
