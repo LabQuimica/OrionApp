@@ -4,12 +4,13 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { Calendar } from 'react-native-calendars';
+import FormularioScreen from './FormularioScreen';
 
 const HomeScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
@@ -24,16 +25,42 @@ const HomeScreen = () => {
       }
     };
     fetchData();
+  }, []);*/
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('vales')
+          .select('id, id_usuario, practicas(id, nombre),fecha');
+        if (error) {
+          throw error;
+        }
+  
+        // Convertir y formatear las fechas
+        const formattedData = data.map(event => ({
+          ...event,
+         fecha: event.fecha.replace(/\//g, '-'), // Reemplaza los guiones por barras
+        }));
+  
+        setValesWithPracticas(formattedData);
+      } catch (error) {
+        console.error('Error al obtener datos:', error.message);
+      }
+    };
+    fetchData();
   }, []);
+  
 
 
   const markedDates = valesWithPracticas.reduce((acc, event) => {
+    /*console.log(event.fecha)*/
+    /*acc[format(event.fecha,'yyyy-MM-dd')] = { marked: true, dotColor: 'red' };*/
     acc[event.fecha] = { marked: true, dotColor: 'red' };
     return acc;
   }, {});
 
   const eventsForSelectedDate = valesWithPracticas.filter(event => event.fecha === selectedDate);
-  console.log(JSON.stringify(valesWithPracticas, null, 2))
+  /*console.log(JSON.stringify(valesWithPracticas, null, 2))*/
 
   return (
     <SafeAreaView className="flex-1 items-center justify-center bg-white">
@@ -52,7 +79,6 @@ const HomeScreen = () => {
           className=' w-96 h-96'
         />
 
-        <Ionicons name="airplane-outline" color={'black'} size={30} />
 
         <ScrollView style={styles.eventsContainer}>
           {eventsForSelectedDate.map((event, index) => (

@@ -10,8 +10,15 @@ import { Session } from '@supabase/supabase-js'
 
 export default function FormularioScreen({ session }: { session: Session }) {
     const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
-    const today = new Date();
-    const startDate = format(today.setDate(today.getDate()+1 ), 'yyyy-MM-dd');
+    const [minStartDate, setMinStartDate] = useState(new Date());
+    /*const today = new Date();
+    const startDate = today.setDate(today.getDate()+1 );*/
+    useEffect(() => {
+        const today = new Date();
+        today.setDate(today.getDate() + 1);
+        setMinStartDate(today);
+    }, []);
+
 
     const [selectedStartDate, setSelectedStartDate] = useState("");
 
@@ -159,15 +166,15 @@ export default function FormularioScreen({ session }: { session: Session }) {
                                     <View style={styles.modalContent}>
                                         <DatePike
                                             mode="calendar"
-                                            minimumDate={startDate}
+                                            minimumDate={minStartDate.toISOString()}
                                             selected={selectedStartDate}
                                             onDateChange={(date) => {
                                                 setSelectedStartDate(date);
-                                                setValue("fecha", format(date, 'yyyy-MM-dd'));  // Actualiza el valor en react-hook-form
+                                                setValue("fecha", date);  // Actualiza el valor en react-hook-form
                                             }}
                                             options={{
                                                 backgroundColor: "#080516",
-                                                textHeaderColor: "#469ab6",
+                                                  textHeaderColor: "#469ab6",
                                                 textDefaultColor: '#ffffff',
                                                 selectedTextColor: '#fff',
                                                 mainColor: "#469ab6",
