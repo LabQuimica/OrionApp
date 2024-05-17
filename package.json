@@ -41,14 +41,10 @@
     "react-native-ui-datepicker": "^2.0.2",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.10",
-<<<<<<< HEAD
     "tailwind-rn": "^4.2.0",
     "tailwindcss-react-native": "^1.7.10",
-    "typescript": "~5.3.3"
-=======
     "typescript": "~5.3.3",
     "expo-image-picker": "~15.0.5"
->>>>>>> e6e85d958cf0769beb7e1093ad65389c6d22c810
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
