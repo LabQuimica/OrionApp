@@ -28,21 +28,21 @@ const PracticasScreen = () => {
 
   const getColorByState = (estado) => {
     switch (estado) {
-      case 0:
-        return 'red';
-      case 1:
-        return 'yellow';
-      case 2:
-        return 'green';
-      default:
-        return 'white';
+        case 0:
+            return 'rgba(255, 0, 0, 0.6)'; // Rojo con 50% de transparencia
+        case 1:
+            return 'rgb(240, 180, 70)'; // Amarillo con 50% de transparencia
+        case 2:
+            return 'rgba(0, 128, 0, 0.6)'; // Verde con 50% de transparencia
+        default:
+            return 'rgba(255, 255, 255, 0.6)'; // Blanco con 50% de transparencia
     }
-  };
+};
 
   const renderItem = ({ item }) => (
     <View style={[styles.itemContainer, { backgroundColor: getColorByState(item.estado) }]}>
-      <Text>Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
-      <Text>Fecha: {item.fecha ?? 'N/A'}</Text>
+      <Text style={styles.title} >Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
+      <Text style={styles.subtitle}>Fecha: {item.fecha ?? 'N/A'}</Text>
     </View>
   );
 
@@ -77,6 +77,16 @@ const styles = StyleSheet.create({
   itemContainer: {
     padding: 20,
     marginVertical: 10,
-    borderRadius: 5,
+    borderRadius: 20,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24, // Tamaño del texto del título
+    fontWeight: 'bold', // Peso de la fuente del título
+  },
+  subtitle: {
+    color: 'white',
+    fontSize: 18, // Tamaño del texto del subtítulo
+    fontWeight: 'normal', // Peso de la fuente del subtítulo
   },
 });

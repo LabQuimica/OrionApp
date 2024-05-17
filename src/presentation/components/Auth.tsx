@@ -48,7 +48,7 @@ export default function Auth() {
   }
 
   return (
-    <View className='flex min-h-full flex-col justify-center px-6 py-12 lg:px-8'>
+    <View className='flex min-h-full flex-col justify-center px-6 py-12 lg:px-8' >
 
     <View className="flex items-center justify-center"> 
       <Image source={require('../../../assets/logo.png')} style={{ height: 300, width: 300  }} />
@@ -58,7 +58,7 @@ export default function Auth() {
             <Input
             className="ml-1 bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
               label="Email"
-              leftIcon={<Ionicons name="mail" color={'black'} size={30} />}
+              leftIcon={<Ionicons name="mail" color={'#00376b'} size={30} />}
               onChangeText={(text) => setEmail(text)}
               value={email}
               selectionColor={'black'}
@@ -72,7 +72,7 @@ export default function Auth() {
             placeholder="contraseña"
             selectionColor={'black'}
             label="Contraseña"
-            leftIcon={<Ionicons name="key" color={'black'} size={30} />}
+            leftIcon={<Ionicons name="key" color={'#00376b'} size={30} />}
             onChangeText={(text) => setPassword(text)}
             value={password}
             secureTextEntry={true}
@@ -104,10 +104,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingHorizontal: 40,
     borderRadius: 50,
     elevation: 3,
-    backgroundColor: 'black',
+    backgroundColor: '#00376b',
+    marginBottom : 10,
+    margin : 10
   },
   text: {
     fontSize: 16,

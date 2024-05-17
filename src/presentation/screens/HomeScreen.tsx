@@ -1,47 +1,29 @@
-import { View, Text, StyleSheet, ScrollView, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button, Image, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { Calendar } from 'react-native-calendars';
-import FormularioScreen from './FormularioScreen';
+import { useNavigation } from '@react-navigation/native';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
+
   const [selectedDate, setSelectedDate] = useState('');
   const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
-
-  /*useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('vales')
-          .select('id, id_usuario, practicas(id, nombre),fecha');
-        if (error) {
-          throw error;
-        }
-        setValesWithPracticas(data);
-      } catch (error) {
-        console.error('Error al obtener datos:', error.message);
-      }
-    };
-    fetchData();
-  }, []);*/
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
           .from('vales')
-          .select('id, id_usuario, practicas(id, nombre),fecha');
+          .select('id, usuarios(id,nombre), practicas(id, nombre),fecha');
         if (error) {
           throw error;
         }
-  
-        // Convertir y formatear las fechas
         const formattedData = data.map(event => ({
           ...event,
-         fecha: event.fecha.replace(/\//g, '-'), // Reemplaza los guiones por barras
+          fecha: event.fecha.replace(/\//g, '-'),
         }));
-  
+
         setValesWithPracticas(formattedData);
       } catch (error) {
         console.error('Error al obtener datos:', error.message);
@@ -49,18 +31,15 @@ const HomeScreen = () => {
     };
     fetchData();
   }, []);
-  
+
 
 
   const markedDates = valesWithPracticas.reduce((acc, event) => {
-    /*console.log(event.fecha)*/
-    /*acc[format(event.fecha,'yyyy-MM-dd')] = { marked: true, dotColor: 'red' };*/
     acc[event.fecha] = { marked: true, dotColor: 'red' };
     return acc;
   }, {});
 
   const eventsForSelectedDate = valesWithPracticas.filter(event => event.fecha === selectedDate);
-  /*console.log(JSON.stringify(valesWithPracticas, null, 2))*/
 
   return (
     <SafeAreaView className="flex-1 items-center justify-center bg-white">
@@ -74,33 +53,27 @@ const HomeScreen = () => {
           }}
           markedDates={{
             ...markedDates,
-            [selectedDate]: { selected: true, selectedColor: 'blue' },
+            [selectedDate]: { selected: true, selectedColor: '#00376b' },
           }}
-          className=' w-96 h-96'
+          className=' w-96 h-96 -mb-1'
         />
-
-
         <ScrollView style={styles.eventsContainer}>
           {eventsForSelectedDate.map((event, index) => (
-            <View key={index} style={styles.event}>
-              <Text  >{event.practicas.nombre}</Text>
-              <Text  >{event.id_usuario}</Text>
+            <View key={index} style={styles.event} >
+              <Text style={styles.title}>{event.practicas.nombre}</Text>
+              <Text style={styles.subtitle}>{event.usuarios.nombre}</Text>
             </View>
           ))}
 
-          <View style={styles.buttonContainer}>
-            <Button title="Nuevo" onPress={() => console.log('Botón presionado')} />
+          <View >
+            <Pressable  style={styles.button} onPress={() => navigation.navigate('Formulario')} >
+            <Text style={styles.text}> Nuevo </Text>
+            </Pressable>
           </View>
         </ScrollView>
 
       </View>
-
-
-
-
     </SafeAreaView>
-
-
   )
 }
 
@@ -115,16 +88,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   eventsContainer: {
-    marginTop: 10,
+    marginTop: -50,
     padding: 10,
+    marginBottom:160
   },
   event: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    backgroundColor: 'blue',
+    padding: 20,
+    margin: 10,
+    flex:1,
+    width:370,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 55, 107, 0.6)',
+
   },
-  buttonContainer: {
-    marginTop: 10,
+  
+  title: {
+    color: 'white',
+    fontSize: 24, // Tamaño del texto del título
+    fontWeight: 'bold', // Peso de la fuente del título
   },
+  subtitle: {
+    color: 'white',
+    fontSize: 18, // Tamaño del texto del subtítulo
+    fontWeight: 'normal', // Peso de la fuente del subtítulo
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 50,
+    elevation: 3,
+    backgroundColor: '#00376b',
+    marginBottom : 10,
+    margin : 10
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
+
+
 });

@@ -33,6 +33,15 @@ export default function FormularioScreen({ session }: { session: Session }) {
     const [loading, setLoading] = useState(true)
     const [username, setUsername] = useState('')
 
+    const options={
+        backgroundColor: "#080516",
+        textDefaultColor: '#ffffff',
+        selectedTextColor: '#fff',
+        mainColor: "#469ab6",
+        textSecondaryColor: "#ffffff",
+        borderColor: 'rgba(122,146,165,0.1)'
+    }
+
     useEffect(() => {
         if (session) getProfile()
     }, [session])
@@ -82,16 +91,25 @@ export default function FormularioScreen({ session }: { session: Session }) {
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <Text style={styles.label}>Nombre del docente:</Text>
+                
                 <Controller
                     control={control}
-                    name="id_usuario"
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            style={styles.input}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
+                    name=""
+                    render={({ field: { onChange, value } }) => (
+                        <Picker
+                            selectedValue={value}
+                            onValueChange={(itemValue) => {
+                                onChange(itemValue);
+                                setSelectedPractice(itemValue);
+                            }}
+                            style={styles.picker}
+                        >
+                            <Picker.Item label="Seleccione una opción" value="" />
+                            <Picker.Item label="Ramon Ramirez" value="1" />
+                            <Picker.Item label="Dante Zapata" value="2" />
+                            <Picker.Item label="Mauel Rodriguez" value="3" />
+                            <Picker.Item label="Daleth Rojo" value="4" />
+                        </Picker>
                     )}
                 />
 
@@ -172,15 +190,7 @@ export default function FormularioScreen({ session }: { session: Session }) {
                                                 setSelectedStartDate(date);
                                                 setValue("fecha", date);  // Actualiza el valor en react-hook-form
                                             }}
-                                            options={{
-                                                backgroundColor: "#080516",
-                                                  textHeaderColor: "#469ab6",
-                                                textDefaultColor: '#ffffff',
-                                                selectedTextColor: '#fff',
-                                                mainColor: "#469ab6",
-                                                textSecondaryColor: "#ffffff",
-                                                borderColor: 'rgba(122,146,165,0.1)'
-                                            }}
+                                            options={options}
                                         />
                                         <TouchableOpacity style={styles.closeButton} onPress={() => setOpenStartDatePiker(false)}>
                                             <Text style={styles.closeButtonText}>Cerrar</Text>
@@ -280,3 +290,17 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
 });
+/*
+<Controller
+                    control={control}
+                    name="id_usuario"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={styles.input}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    )}
+                />
+*/
