@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../../lib/supabase'
-import { StyleSheet, View, Alert, Image, Button } from 'react-native'
+import { StyleSheet, View, Alert, Image, Button,TouchableOpacity } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface Props {
   size: number
@@ -89,27 +90,33 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
   }
 
   return (
-    <View>
-      {avatarUrl ? (
-        
-        <Image
-          source={{ uri: avatarUrl }}
-          accessibilityLabel="Avatar"
-          style={[avatarSize, styles.avatar, styles.image]}
-        />
-      ) : (
-        <View style={[avatarSize, styles.avatar, styles.noImage]} />
-      )}
-      <View>
-        <Button
-          title={uploading ? 'Uploading ...' : 'Upload'}
-          onPress={uploadAvatar}
-          disabled={uploading}
-        />
+<View>
+  {avatarUrl ? (
+    <TouchableOpacity onPress={uploadAvatar}>
+      <Image
+        source={{ uri: avatarUrl }}
+        accessibilityLabel="Avatar"
+        style={[avatarSize, styles.avatar, styles.image]}
+      />
+      <View className='absolute top-0 right-2 bg-black rounded-full p-2'>
+        <Ionicons name="pencil" size={30} color="white" />
       </View>
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity onPress={uploadAvatar}>
+    <View className="flex items-center justify-center"> 
+      <Image source={require('../../../assets/profile.png')} style={{ height: 200, width: 200  }} />
     </View>
+          <View className='absolute top-0 right-2 bg-black rounded-full p-2'>
+          <Ionicons name="pencil" size={30} color="white" />
+        </View>
+  </TouchableOpacity>
+  )}
+</View>
   )
 }
+
+// style={{ position: 'absolute', top: 3, right: 0 } }
 
 const styles = StyleSheet.create({
   avatar: {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../../lib/supabase'
-import { StyleSheet, View, Alert } from 'react-native'
+import { StyleSheet, View, Alert, Pressable, Text,SafeAreaView } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { Session } from '@supabase/supabase-js'
 import Avatar from './Avatar'
@@ -78,55 +78,71 @@ export default function Account({ session }: { session: Session }) {
       setLoading(false)
     }
   }
-
   return (
 
-    <View style={styles.container}>
-        <View>
-    {/* Add to the body */}
-    <View style={styles.imagen}>
-      <Avatar
-        size={200}
-        url={avatarUrl}
-        onUpload={(url: string) => {
-          setAvatarUrl(url)
-          updateProfile({ username, website, avatar_url: url })
-        }}
-      />
-    </View>
-    {/* ... */}
-  </View>
+    <SafeAreaView className="flex-1 items-center justify-center bg-white p-5">
+      <View>
+        <View className='flex items-center justify-center'>
+            <Avatar
+              size={200}
+              url={avatarUrl}
+              onUpload={(url: string) => {
+                setAvatarUrl(url)
+                updateProfile({ username, website, avatar_url: url })
+              }}
+            />
+          </View>
+      </View>
+      
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input label="Username" value={username || ''} onChangeText={(text) => setUsername(text)} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input label="Website" value={website || ''} onChangeText={(text) => setWebsite(text)} />
-      </View>
 
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title={loading ? 'Loading ...' : 'Update'}
-          onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
-          disabled={loading}
-        />
+        <Input 
+          className="ml-1 border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+        label="Email" 
+        value={session?.user?.email} disabled />
       </View>
 
       <View style={styles.verticallySpaced}>
-        <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
+        <Input 
+          className="ml-1 border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+          selectionColor={'black'}
+          label="Username" 
+          value={username || ''} 
+          onChangeText={(text) => setUsername(text)} />
       </View>
 
-    </View>
+      <View style={styles.verticallySpaced}>
+        <Input 
+          className="ml-1 border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+          selectionColor={'black'}
+          label="Boleta" 
+          value={website || ''} 
+          onChangeText={(text) => setWebsite(text)} />
+      </View>
+
+          <View className='mt-20' style={styles.verticallySpaced}>
+                <Pressable 
+                  disabled={loading} 
+                  style={styles.button} 
+                  onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })} >
+                  <Text style={styles.text}> {loading ? 'Loading ...' : 'Update'} </Text>
+                  
+                </Pressable>
+          </View>
+
+          <View className='mt-7' style={styles.verticallySpaced}>
+                <Pressable 
+                  style={styles.button} 
+                  onPress={() => supabase.auth.signOut()}>
+                  <Text style={styles.text}> Sign Out </Text>
+                </Pressable>
+          </View>
+
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-  },
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
@@ -137,5 +153,21 @@ const styles = StyleSheet.create({
   },
   imagen: {
     borderRadius: 100,
-  }
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 50,
+    elevation: 3,
+    backgroundColor: 'black',
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
 })
