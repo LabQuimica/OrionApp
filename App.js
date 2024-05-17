@@ -1,8 +1,7 @@
 import 'react-native-gesture-handler';
-
-import Navigation from './Navigation';
+import Orion from './src/Orion';
 
 export default function App() {
-  return <Navigation/>
+  return <Orion />
 }
 

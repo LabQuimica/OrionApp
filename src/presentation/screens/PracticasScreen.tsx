@@ -26,7 +26,18 @@ const PracticasScreen = () => {
 
     fetchData();
   }, []);
-
+  /*
+let colorState = (estado) =>{
+  let color
+  if estado == 0:
+    color = 'red';
+  if estado == 1;
+    color = 'yellow'
+  if estado  == 2:
+    color  = 'green'
+  return color
+  
+}*/
 
   const renderItem = ({ item }) => (
     <View style={{ padding: 30, backgroundColor:'orange'}}>
@@ -47,7 +58,7 @@ const PracticasScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
       />
-          <Text className='text-black'>{JSON.stringify(valesWithPracticas)}</Text>
+          <Text className='text-black'>{JSON.stringify(valesWithPracticas, null, 2)}</Text>
 
 
       </SafeAreaView>
