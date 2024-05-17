@@ -26,8 +26,21 @@ const PracticasScreen = () => {
     fetchData();
   }, []);
 
+  const getColorByState = (estado) => {
+    switch (estado) {
+      case 0:
+        return 'red';
+      case 1:
+        return 'yellow';
+      case 2:
+        return 'green';
+      default:
+        return 'white';
+    }
+  };
+
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
+    <View style={[styles.itemContainer, { backgroundColor: getColorByState(item.estado) }]}>
       <Text>Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
       <Text>Fecha: {item.fecha ?? 'N/A'}</Text>
     </View>
@@ -49,13 +62,21 @@ const PracticasScreen = () => {
 export default PracticasScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white' },
-  image: { height: 300, width: '100%', resizeMode: 'cover', borderRadius: 10 },
-  listContent: { padding: 20 },
-  itemContainer: { 
-    padding: 20, 
-    marginBottom: 20, 
-    backgroundColor: '#F5F5DC', 
-    borderRadius: 10, 
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  image: {
+    height: 300,
+    width: '100%',
+    resizeMode: 'cover',
+  },
+  listContent: {
+    padding: 20,
+  },
+  itemContainer: {
+    padding: 20,
+    marginVertical: 10,
+    borderRadius: 5,
   },
 });
