@@ -30,18 +30,14 @@ export default function FormularioScreen() {
     };*/
     const onSubmit = async (data1) => {
         try {
-            // Inserción de datos en la tabla 'vales'
             const { data, error } = await supabase
                 .from("vales")
-                .insert([data1]); // Asegúrate de enviar `data1` dentro de un array
-    
+                .insert([data1]); 
             if (error) {
-                throw error; // Lanza el error para que sea capturado por el bloque catch
-            }
-    
-            console.log("Data inserted:", data); // Imprime los datos insertados
+                throw error; }
+            console.log("Data inserted:", data);
         } catch (error) {
-            console.error("Error inserting data:", error.message); // Maneja y muestra el error
+            console.error("Error inserting data:", error.message); 
         }
     };
 
