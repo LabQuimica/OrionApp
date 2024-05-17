@@ -1,16 +1,17 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
-import { supabase } from '../../../lib/supabase'; 
-import { StyleSheet, TextInput, Button, View, Text, ScrollView, Modal, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
+import { supabase } from '../../../lib/supabase';
+import { StyleSheet, TextInput, View, Text, ScrollView, Modal, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from 'react-hook-form';
 import DatePike from 'react-native-modern-datepicker';
 import { format } from 'date-fns';
+import { Session } from '@supabase/supabase-js'
 
-export default function FormularioScreen() {
+export default function FormularioScreen({ session }: { session: Session }) {
     const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
     const today = new Date();
-    const startDate = format(today.setDate(today.getDate() + 1), 'yyyy-MM-dd');
+    const startDate = format(today.setDate(today.getDate()+1 ), 'yyyy-MM-dd');
 
     const [selectedStartDate, setSelectedStartDate] = useState("");
 
@@ -20,24 +21,53 @@ export default function FormularioScreen() {
 
     const { control, handleSubmit, setValue } = useForm();
     const [selectedPractice, setSelectedPractice] = useState('');
+    const [profilesData, setProfilesDate] = useState<any[]>([]);
 
-    /*const onSubmit = async(data1) => {
-        const{data,error} = await supabase.from("vales").insert({data1});
-        if(error){
-            console.log(error);
+    const [loading, setLoading] = useState(true)
+    const [username, setUsername] = useState('')
+
+    useEffect(() => {
+        if (session) getProfile()
+    }, [session])
+
+    async function getProfile() {
+        try {
+            setLoading(true)
+            if (!session?.user) throw new Error('No user on the session!')
+
+            const { data, error, status } = await supabase
+                .from('profiles')
+                .select(`username`)
+                .eq('id', session?.user.id)
+                .single()
+            if (error && status !== 406) {
+                throw error
+            }
+
+            if (data) {
+                setUsername(data.username)
+                console.log(data.username)
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                Alert.alert(error.message)
+            }
+        } finally {
+            setLoading(false)
         }
-        console.log(data1);
-    };*/
+    }
+
     const onSubmit = async (data1) => {
         try {
             const { data, error } = await supabase
                 .from("vales")
-                .insert([data1]); 
+                .insert([data1]);
             if (error) {
-                throw error; }
+                throw error;
+            }
             console.log("Data inserted:", data);
         } catch (error) {
-            console.error("Error inserting data:", error.message); 
+            console.error("Error inserting data:", error.message);
         }
     };
 
