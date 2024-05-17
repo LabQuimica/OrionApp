@@ -1,5 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
+import { supabase } from '../../../lib/supabase'; 
 import { StyleSheet, TextInput, Button, View, Text, ScrollView, Modal, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from 'react-hook-form';
@@ -9,7 +10,7 @@ import { format } from 'date-fns';
 export default function FormularioScreen() {
     const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
     const today = new Date();
-    const startDate = format(today.setDate(today.getDate() + 1), 'yyyy/MM/dd');
+    const startDate = format(today.setDate(today.getDate() + 1), 'yyyy-MM-dd');
 
     const [selectedStartDate, setSelectedStartDate] = useState("");
 
@@ -20,8 +21,28 @@ export default function FormularioScreen() {
     const { control, handleSubmit, setValue } = useForm();
     const [selectedPractice, setSelectedPractice] = useState('');
 
-    const onSubmit = (data) => {
-        console.log(data);
+    /*const onSubmit = async(data1) => {
+        const{data,error} = await supabase.from("vales").insert({data1});
+        if(error){
+            console.log(error);
+        }
+        console.log(data1);
+    };*/
+    const onSubmit = async (data1) => {
+        try {
+            // Inserción de datos en la tabla 'vales'
+            const { data, error } = await supabase
+                .from("vales")
+                .insert([data1]); // Asegúrate de enviar `data1` dentro de un array
+    
+            if (error) {
+                throw error; // Lanza el error para que sea capturado por el bloque catch
+            }
+    
+            console.log("Data inserted:", data); // Imprime los datos insertados
+        } catch (error) {
+            console.error("Error inserting data:", error.message); // Maneja y muestra el error
+        }
     };
 
     return (
@@ -30,7 +51,7 @@ export default function FormularioScreen() {
                 <Text style={styles.label}>Nombre del docente:</Text>
                 <Controller
                     control={control}
-                    name="teacherName"
+                    name="id_usuario"
                     render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
                             style={styles.input}
@@ -44,7 +65,7 @@ export default function FormularioScreen() {
                 <Text style={styles.label}>Nombre de la práctica:</Text>
                 <Controller
                     control={control}
-                    name="selectedPractice"
+                    name="id_practica"
                     render={({ field: { onChange, value } }) => (
                         <Picker
                             selectedValue={value}
@@ -66,7 +87,7 @@ export default function FormularioScreen() {
                 <Text style={styles.label}>Grupo:</Text>
                 <Controller
                     control={control}
-                    name="group"
+                    name="grupo"
                     render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
                             style={styles.input}
@@ -116,7 +137,7 @@ export default function FormularioScreen() {
                                             selected={selectedStartDate}
                                             onDateChange={(date) => {
                                                 setSelectedStartDate(date);
-                                                setValue("fecha", date);  // Actualiza el valor en react-hook-form
+                                                setValue("fecha", format(date, 'yyyy-MM-dd'));  // Actualiza el valor en react-hook-form
                                             }}
                                             options={{
                                                 backgroundColor: "#080516",
