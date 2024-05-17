@@ -1,8 +1,7 @@
-import { View, Text, Image, FlatList, StyleSheet  } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase'; // Assuming supabase is initialized elsewhere
 import { useEffect, useState } from 'react';
-
 
 const PracticasScreen = () => {
   const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
@@ -26,43 +25,37 @@ const PracticasScreen = () => {
 
     fetchData();
   }, []);
-  /*
-let colorState = (estado) =>{
-  let color
-  if estado == 0:
-    color = 'red';
-  if estado == 1;
-    color = 'yellow'
-  if estado  == 2:
-    color  = 'green'
-  return color
-  
-}*/
+
+  const getColorByState = (estado) => {
+    switch (estado) {
+      case 0:
+        return 'red';
+      case 1:
+        return 'yellow';
+      case 2:
+        return 'green';
+      default:
+        return 'white';
+    }
+  };
 
   const renderItem = ({ item }) => (
-    <View style={{ padding: 30, backgroundColor:'orange'}}>
-      <Text >Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
+    <View style={[styles.itemContainer, { backgroundColor: getColorByState(item.estado) }]}>
+      <Text>Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
       <Text>Fecha: {item.fecha ?? 'N/A'}</Text>
-      
     </View>
   );
 
   return (
-    
-      <SafeAreaView className="flex-1 items-center justify-center bg-white">
-        <Image source={require('../../../assets/imagenP.jpg')} style={{ height: 300 }} />
-        
-        <FlatList
+    <SafeAreaView style={styles.container}>
+      <Image source={require('../../../assets/imagenP.jpg')} style={styles.image} />
+      <FlatList
         data={valesWithPracticas}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
       />
-          <Text className='text-black'>{JSON.stringify(valesWithPracticas, null, 2)}</Text>
-
-
-      </SafeAreaView>
-   
+    </SafeAreaView>
   );
 };
 
@@ -83,7 +76,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    marginVertical: 10,
+    borderRadius: 5,
   },
 });
