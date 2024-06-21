@@ -59,5 +59,7 @@ export const HomeNavigator = ({ session }) => {
             ),
           }} />
     </BottomTab.Navigator>
+
+    
   );
 }

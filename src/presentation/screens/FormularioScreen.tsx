@@ -34,12 +34,9 @@ export default function FormularioScreen({ session }: { session: Session }) {
     const [username, setUsername] = useState('')
 
     const options={
-        backgroundColor: "#080516",
-        textDefaultColor: '#ffffff',
-        selectedTextColor: '#fff',
         mainColor: "#469ab6",
-        textSecondaryColor: "#ffffff",
-        borderColor: "#080516"
+        borderColor: 'rgba(122,146,165,0.1)'
+        
     }
 
     useEffect(() => {
@@ -74,6 +71,15 @@ export default function FormularioScreen({ session }: { session: Session }) {
     }
 
     const onSubmit = async (data1) => {
+        // Verificar si todos los campos requeridos están llenos
+        const requiredFields = ['id_usuario', 'id_practica', 'grupo', 'ua', 'fecha']; // Asegúrate de incluir aquí todos los campos requeridos
+        const areFieldsFilled = requiredFields.every(field => data1[field] && data1[field].trim() !== '');
+    
+        if (!areFieldsFilled) {
+            Alert.alert("Error", "Por favor, completa todos los campos antes de confirmar.");
+            return;
+        }
+    
         try {
             const { data, error } = await supabase
                 .from("vales")
@@ -82,6 +88,8 @@ export default function FormularioScreen({ session }: { session: Session }) {
                 throw error;
             }
             console.log("Data inserted:", data);
+            // Aquí puedes llamar a la función para recargar los datos del calendario
+            // Por ejemplo: reloadCalendarData();
         } catch (error) {
             console.error("Error inserting data:", error.message);
         }
@@ -90,19 +98,24 @@ export default function FormularioScreen({ session }: { session: Session }) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style= {styles.titleF}>
+                    <Text style={styles.title}>Formulario</Text>
+                </View>
+                
+                
                 <Text style={styles.label}>Nombre del docente:</Text>
                 
                 <Controller
                     control={control}
                     name="id_usuario"
                     render={({ field: { onChange, value } }) => (
+                        <View style={styles.input1}>
                         <Picker
                             selectedValue={value}
                             onValueChange={(itemValue) => {
                                 onChange(itemValue);
                                 setSelectedPractice(itemValue);
                             }}
-                            style={styles.picker}
                         >
                             <Picker.Item label="Seleccione una opción" value="" />
                             <Picker.Item label="Ramon Ramirez" value="1" />
@@ -110,6 +123,7 @@ export default function FormularioScreen({ session }: { session: Session }) {
                             <Picker.Item label="Mauel Rodriguez" value="3" />
                             <Picker.Item label="Daleth Rojo" value="4" />
                         </Picker>
+                        </View>
                     )}
                 />
 
@@ -118,13 +132,14 @@ export default function FormularioScreen({ session }: { session: Session }) {
                     control={control}
                     name="id_practica"
                     render={({ field: { onChange, value } }) => (
-                        <Picker
+                        <View style={styles.input1}>
+                            <Picker
                             selectedValue={value}
                             onValueChange={(itemValue) => {
                                 onChange(itemValue);
                                 setSelectedPractice(itemValue);
                             }}
-                            style={styles.picker}
+                            
                         >
                             <Picker.Item label="Seleccione una opción" value="" />
                             <Picker.Item label="Practica prueba" value="1" />
@@ -132,6 +147,8 @@ export default function FormularioScreen({ session }: { session: Session }) {
                             <Picker.Item label="Decantación" value="3" />
                             <Picker.Item label="Microbilogía" value="4" />
                         </Picker>
+                        </View>
+                        
                     )}
                 />
 
@@ -213,94 +230,103 @@ export default function FormularioScreen({ session }: { session: Session }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        padding: 25,
+        backgroundColor: '#ffffff',
     },
     scrollContainer: {
-        padding: 20,
-        alignItems: 'center',
+        flexGrow: 1,
     },
-    label: {
-        fontSize: 18,
-        marginBottom: 10,
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
         color: '#333',
     },
-    input: {
-        width: '100%',
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        marginBottom: 20,
-        backgroundColor: '#f9f9f9',
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 3,
+        marginTop: 5,
+        marginStart: 10,
+        
     },
-    picker: {
-        width: '100%',
-        height: 50,
-        marginBottom: 20,
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 15,
+        padding: 15,
+        marginBottom: 15,
+        backgroundColor: '#fff',
+        fontSize: 18,
     },
     dateButton: {
-        width: '100%',
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#469ab6',
-        borderRadius: 8,
-        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 15,
+        padding: 15,
+        marginBottom: 15,
+        backgroundColor: '#fff',
     },
     dateButtonText: {
-        color: 'white',
-        fontSize: 16,
+        fontSize: 18,
+        color: '#333',
+    },
+    submitButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 50,
+        elevation: 3,
+        marginTop: 20,
+        backgroundColor: 'black',
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        width: 300,
-        backgroundColor: 'white',
-        borderRadius: 8,
-        padding: 20,
-        alignItems: 'center',
+        backgroundColor: '#fff',
+        padding: 15,
+        borderRadius: 40,
+        width: '85%',
     },
     closeButton: {
-        marginTop: 20,
-        backgroundColor: '#469ab6',
-        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 32,
+        borderRadius: 50,
+        elevation: 3,
+        marginTop: 20,
+        marginBottom: 20,
+        backgroundColor: 'black',
     },
     closeButtonText: {
-        color: 'white',
-        fontSize: 16,
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
     },
-    submitButton: {
-        width: '100%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#28a745',
-        borderRadius: 8,
-        marginBottom: 20,
+    titleF :{
+        marginBottom: 25,
+        marginTop: 20,
+        
     },
-    submitButtonText: {
-        color: 'white',
+    input1: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 15,
+        padding: 3,
+        marginBottom: 15,
+        backgroundColor: '#fff',
         fontSize: 18,
     },
 });
-/*
-<Controller
-                    control={control}
-                    name="id_usuario"
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            style={styles.input}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                />
-*/

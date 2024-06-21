@@ -92,14 +92,14 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
   return (
 <View>
   {avatarUrl ? (
-    <TouchableOpacity onPress={uploadAvatar}>
+    <TouchableOpacity onPress={uploadAvatar} style= {styles.avatar1}>
       <Image
         source={{ uri: avatarUrl }}
         accessibilityLabel="Avatar"
         style={[avatarSize, styles.avatar, styles.image]}
       />
       <View className='absolute top-0 right-2 bg-black rounded-full p-2'>
-        <Ionicons name="pencil" size={30} color="white" />
+        <Ionicons name="pencil" size={35} color="white" />
       </View>
     </TouchableOpacity>
   ) : (
@@ -135,5 +135,12 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'rgb(200, 200, 200)',
     borderRadius: 5,
+  },
+  avatar1: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 50,
+    justifyContent: 'center',
   },
 })

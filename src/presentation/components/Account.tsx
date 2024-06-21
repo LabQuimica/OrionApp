@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   mt20: {
-    marginTop: 20,
+    marginTop: 10,
   },
   imagen: {
     borderRadius: 100,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingHorizontal: 20,
     borderRadius: 50,
     elevation: 3,
     backgroundColor: 'black',
