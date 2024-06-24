@@ -42,12 +42,15 @@ const HomeScreen = ({ navigation }) => {
   const eventsForSelectedDate = valesWithPracticas.filter(event => event.fecha === selectedDate);
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-white">
-      <Image source={require('../../../assets/imagenP.jpg')} style={{ height: 300 }} />
+    <SafeAreaView className="flex-1 items-center justify-center bg-white p-10">
+      <View className="items-center justify-center">
+        <Text className="text-4xl font-bold text-blue-500">Calendario</Text>
+      </View>
 
       <View className="justify-center items-center">
 
         <Calendar
+          style={styles.calendar}
           onDayPress={(day) => {
             setSelectedDate(day.dateString);
           }}
@@ -66,8 +69,8 @@ const HomeScreen = ({ navigation }) => {
           ))}
 
           <View >
-            <Pressable  style={styles.button} onPress={() => navigation.navigate('Formulario')} >
-            <Text style={styles.text}> Nuevo </Text>
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Formulario')} >
+              <Text style={styles.text}> Nuevo </Text>
             </Pressable>
           </View>
         </ScrollView>
@@ -81,27 +84,22 @@ export default HomeScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  innerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 20,
   },
   eventsContainer: {
-    marginTop: -50,
     padding: 10,
-    marginBottom:160
+    margin: 10,
   },
   event: {
     padding: 20,
     margin: 10,
-    flex:1,
-    width:370,
+    flex: 1,
+    width: 370,
     borderRadius: 20,
     backgroundColor: 'rgba(0, 55, 107, 0.6)',
 
   },
-  
+
   title: {
     color: 'white',
     fontSize: 24, // Tamaño del texto del título
@@ -115,20 +113,28 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 40,
+    width: 200,
+
     borderRadius: 50,
     elevation: 3,
-    backgroundColor: '#00376b',
-    marginBottom : 10,
-    margin : 10
+    margin: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 20,
+    backgroundColor: 'black',
   },
   text: {
-    fontSize: 16,
-    lineHeight: 21,
+    color: '#fff',
+    fontSize: 20,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: 'white',
+
+  },
+  calendar: {
+    margin: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
 
 

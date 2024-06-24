@@ -6,7 +6,6 @@ import { StyleSheet, TextInput, View, Text, ScrollView, Modal, TouchableOpacity,
 import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from 'react-hook-form';
 import DatePiker from 'react-native-modern-datepicker';
-import { Session } from '@supabase/supabase-js'
 import { useNavigation } from '@react-navigation/native';
 
 

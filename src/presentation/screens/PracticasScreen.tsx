@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase'; 
-import { Session } from '@supabase/supabase-js'
+import { Searchbar } from 'react-native-paper';
 
 const PracticasScreen = ({ route }) => {
   const { session } = route.params;
   const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
-  const [touchableDimensions, setTouchableDimensions] = useState({ width: 0, height: 0 });
   const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
+  const [dimensions, setDimensions] = useState({});
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   useEffect(() => {
     fetchPractices();
@@ -53,29 +54,40 @@ const PracticasScreen = ({ route }) => {
     }
   };
 
-  const onTouchableLayout = (event) => {
+  const onTouchableLayout = (event, id) => {
     const { width, height } = event.nativeEvent.layout;
-    setTouchableDimensions({ width, height });
+    setDimensions(prev => ({ ...prev, [id]: { width, height } }));
   };
 
-  const dynamicMargins = {
-    marginHorizontal: touchableDimensions.width * 0.05, // Ejemplo: 5% del ancho
-    marginVertical: touchableDimensions.height * 0.1, // Ejemplo: 5% del alto
-    height: touchableDimensions.height * 0.8, // Ejemplo: 90% del alto
+  const dynamicMargins = (id) => {
+    const { width, height } = dimensions[id] || { width: 0, height: 0 };
+    return {
+      marginHorizontal: width * 0.05, // Ejemplo: 5% del ancho
+      marginVertical: height * 0.1, // Ejemplo: 10% del alto
+      height: height * 0.8, // Ejemplo: 80% del alto
+    };
   };
 
   const onPress = () => setOpenStartDatePiker(!openStartDatePicker);
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.itemContainer]} onPress={onPress} onLayout={onTouchableLayout}>
-      <View style={[styles.itemContainer2, { backgroundColor: getColorByState(item.estado) }, dynamicMargins]}></View>
+    <TouchableOpacity style={[styles.itemContainer]} onPress={onPress} onLayout={(event) => onTouchableLayout(event, item.id)}>
+      <View style={[styles.itemContainer2, { backgroundColor: getColorByState(item.estado) }, dynamicMargins(item.id)]}></View>
       <Text style={styles.title} >Práctica: {item.practicas?.nombre ?? 'N/A'}</Text>
+      <Text style={styles.subtitle}>Profesor: {item.profesores.nombre ?? 'N/A'}</Text>
       <Text style={styles.subtitle}>Fecha: {item.fecha ?? 'N/A'}</Text>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text className="text-4xl font-bold text-blue-500 m-10 items-center justify-center">Prácticas</Text>
+      <Searchbar
+      style={{ margin: 10, borderRadius: 20, elevation: 3, backgroundColor: '#fff', borderColor: '#ccc', marginHorizontal: 20}}
+      placeholder="Buscar"
+      onChangeText={setSearchQuery}
+      value={searchQuery}
+    />
       <FlatList
         data={valesWithPracticas}
         renderItem={renderItem}
@@ -104,12 +116,13 @@ export default PracticasScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f0f0f0',
   },
   listContent: {
-    padding: 20,
+    padding: 15,
   },
   itemContainer: {
+    backgroundColor: '#ffffff',
     padding: 20,
     marginVertical: 10,
     borderRadius: 20,
@@ -118,12 +131,12 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'black',
-    fontSize: 20, // Tamaño del texto del título
+    fontSize: 18, // Tamaño del texto del título
     fontWeight: 'bold', // Peso de la fuente del título
   },
   subtitle: {
     color: 'black',
-    fontSize: 18, // Tamaño del texto del subtítulo
+    fontSize: 16, // Tamaño del texto del subtítulo
     fontWeight: 'normal', // Peso de la fuente del subtítulo
   },
   itemContainer2: {
