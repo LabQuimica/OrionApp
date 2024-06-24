@@ -139,7 +139,7 @@ export default function FormularioScreen({route}) {
                     )}
                 />
 
-                <Text style={styles.label}>UA:</Text>
+                <Text style={styles.label}>Unidad Aacadémica:</Text>
                 <Controller
                     control={control}
                     name="ua"
