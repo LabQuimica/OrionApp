@@ -97,14 +97,30 @@ export default function Account({ session }: { session: Session }) {
       <View style={[styles.verticallySpaced, styles.mt20]}>
 
         <Input 
-          className="ml-1 border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+        containerStyle={{
+          margin: 10, // Margen alrededor del input
+        }}
+        inputContainerStyle={{
+          borderColor: 'gray', // Color del borde del input
+        }}
+        inputStyle={{
+          color: 'black', // Color del texto
+        }}
         label="Email" 
         value={session?.user?.email} disabled />
       </View>
 
       <View style={styles.verticallySpaced}>
         <Input 
-          className="ml-1 border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+          containerStyle={{
+            margin: 10, // Margen alrededor del input
+          }}
+          inputContainerStyle={{
+            borderColor: 'gray', // Color del borde del input
+          }}
+          inputStyle={{
+            color: 'black', // Color del texto
+          }}
           selectionColor={'black'}
           label="Username" 
           value={username || ''} 
@@ -112,15 +128,23 @@ export default function Account({ session }: { session: Session }) {
       </View>
 
       <View style={styles.verticallySpaced}>
+        
         <Input 
-          className="ml-1 border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-          selectionColor={'black'}
-          label="Boleta" 
           value={website || ''} 
+          label="Boleta"
+          containerStyle={{
+            margin: 10, // Margen alrededor del input
+          }}
+          inputContainerStyle={{
+            borderColor: 'gray', // Color del borde del input
+          }}
+          inputStyle={{
+            color: 'black', // Color del texto
+          }}
           onChangeText={(text) => setWebsite(text)} />
       </View>
 
-          <View className='mt-20' style={styles.verticallySpaced}>
+          <View className='mt-15' style={styles.verticallySpaced}>
                 <Pressable 
                   disabled={loading} 
                   style={styles.button} 

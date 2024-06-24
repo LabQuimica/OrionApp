@@ -4,96 +4,69 @@ import { supabase } from '../../../lib/supabase';
 import { StyleSheet, TextInput, View, Text, ScrollView, Modal, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from 'react-hook-form';
-import DatePike from 'react-native-modern-datepicker';
-import { format } from 'date-fns';
+import DatePiker from 'react-native-modern-datepicker';
 import { Session } from '@supabase/supabase-js'
 
-export default function FormularioScreen({ session }: { session: Session }) {
+export default function FormularioScreen({route}) {
+    const { session } = route.params;
     const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
     const [minStartDate, setMinStartDate] = useState(new Date());
-    /*const today = new Date();
-    const startDate = today.setDate(today.getDate()+1 );*/
+    const [selectedStartDate, setSelectedStartDate] = useState("");
+    const { control, handleSubmit, setValue } = useForm();
+    const [selectedPractice, setSelectedPractice] = useState('');
+    const [username, setUsername] = useState('');
+    
+
     useEffect(() => {
         const today = new Date();
         today.setDate(today.getDate() + 1);
         setMinStartDate(today);
-    }, []);
-
-
-    const [selectedStartDate, setSelectedStartDate] = useState("");
+    
+        // Asegúrate de que tanto session como session.user están definidos
+        if (session && session.user && session.user.id) {
+            // Aquí podrías hacer cualquier lógica adicional para obtener información del usuario, si es necesario
+            setUsername(session.user.email); // o cualquier otro dato de sesión relevante
+        } else {
+            Alert.alert("Error", "La sesión no está disponible. Por favor, inicia sesión de nuevo. uses");
+        }
+    }, [session]);
 
     const handleOnPressStartDate = () => {
         setOpenStartDatePiker(!openStartDatePicker);
     }
 
-    const { control, handleSubmit, setValue } = useForm();
-    const [selectedPractice, setSelectedPractice] = useState('');
-    const [profilesData, setProfilesDate] = useState<any[]>([]);
-
-    const [loading, setLoading] = useState(true)
-    const [username, setUsername] = useState('')
-
-    const options={
+    const options = {
         mainColor: "#469ab6",
         borderColor: 'rgba(122,146,165,0.1)'
-        
-    }
-
-    useEffect(() => {
-        if (session) getProfile()
-    }, [session])
-
-    async function getProfile() {
-        try {
-            setLoading(true)
-            if (!session?.user) throw new Error('No user on the session!')
-
-            const { data, error, status } = await supabase
-                .from('profiles')
-                .select(`username`)
-                .eq('id', session?.user.id)
-                .single()
-            if (error && status !== 406) {
-                throw error
-            }
-
-            if (data) {
-                setUsername(data.username)
-                console.log(data.username)
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                Alert.alert(error.message)
-            }
-        } finally {
-            setLoading(false)
-        }
     }
 
     const onSubmit = async (data1) => {
-        // Verificar si todos los campos requeridos están llenos
-        const requiredFields = ['id_usuario', 'id_practica', 'grupo', 'ua', 'fecha']; // Asegúrate de incluir aquí todos los campos requeridos
-        const areFieldsFilled = requiredFields.every(field => data1[field] && data1[field].trim() !== '');
-    
-        if (!areFieldsFilled) {
+        if (!session || !session.user.id) {
+            Alert.alert("Error", "La sesión no está disponible. Por favor, inicia sesión de nuevo.");
+            return;
+        }
+
+        // Asegúrate de que todos los campos requeridos estén definidos
+        if (!data1.id_practica || !data1.grupo || !data1.ua || !data1.fecha || !data1.id_profesor) {
             Alert.alert("Error", "Por favor, completa todos los campos antes de confirmar.");
             return;
         }
-    
+
+        data1.id_usuario = session.user.id; // Añadir el ID del usuario
+         // Añadir el nombre del profesor
+
         try {
             const { data, error } = await supabase
-                .from("vales")
+                .from("vales_2")
                 .insert([data1]);
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
             console.log("Data inserted:", data);
-            // Aquí puedes llamar a la función para recargar los datos del calendario
-            // Por ejemplo: reloadCalendarData();
         } catch (error) {
             console.error("Error inserting data:", error.message);
+            Alert.alert("Error", `Error al insertar datos: ${error.message}`);
         }
     };
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -107,7 +80,7 @@ export default function FormularioScreen({ session }: { session: Session }) {
                 
                 <Controller
                     control={control}
-                    name="id_usuario"
+                    name="id_profesor"
                     render={({ field: { onChange, value } }) => (
                         <View style={styles.input1}>
                         <Picker
@@ -199,7 +172,7 @@ export default function FormularioScreen({ session }: { session: Session }) {
                                 visible={openStartDatePicker}>
                                 <View style={styles.modalContainer}>
                                     <View style={styles.modalContent}>
-                                        <DatePike
+                                        <DatePiker
                                             mode="calendar"
                                             minimumDate={minStartDate.toISOString()}
                                             selected={selectedStartDate}

@@ -2,16 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase'; // Assuming supabase is initialized elsewhere
-
-const PracticasScreen = () => {
+import { Session } from '@supabase/supabase-js'
+const PracticasScreen = ({ route }) => {
+  const { session } = route.params;
   const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!session?.user?.id) {
+        console.error('ID de usuario no disponible');
+        return;
+      }
+
       try {
         const { data, error } = await supabase
-          .from('vales')
-          .select('id,practicas(id, nombre), fecha, estado');
+          .from('vales_2')
+          .select('id,practicas(id, nombre), fecha, estado')
+          .eq('id_usuario', session.user.id);
 
         if (error) {
           throw error;
@@ -19,12 +26,15 @@ const PracticasScreen = () => {
 
         setValesWithPracticas(data);
       } catch (error) {
-        console.error('Error al obtener datos:', error.message);
+        if (error instanceof Error) {
+          console.error('Error al obtener datos:', error.message);
+        } else {
+          console.error('Error desconocido al obtener datos');
+        }
       }
     };
-
     fetchData();
-  }, []);
+  }, [session?.user?.id]);
 
   const getColorByState = (estado) => {
     switch (estado) {
@@ -48,7 +58,7 @@ const PracticasScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={require('../../../assets/imagenP.jpg')} style={styles.image} />
+      
       <FlatList
         data={valesWithPracticas}
         renderItem={renderItem}
