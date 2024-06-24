@@ -1,5 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button, Snackbar } from 'react-native-paper';
 import { supabase } from '../../../lib/supabase';
 import { StyleSheet, TextInput, View, Text, ScrollView, Modal, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -12,22 +13,19 @@ export default function FormularioScreen({route}) {
     const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
     const [minStartDate, setMinStartDate] = useState(new Date());
     const [selectedStartDate, setSelectedStartDate] = useState("");
-    const { control, handleSubmit, setValue } = useForm();
+    const { control, handleSubmit, setValue, reset, clearErrors } = useForm();
     const [selectedPractice, setSelectedPractice] = useState('');
     const [username, setUsername] = useState('');
-    
 
     useEffect(() => {
         const today = new Date();
         today.setDate(today.getDate() + 1);
         setMinStartDate(today);
     
-        // Asegúrate de que tanto session como session.user están definidos
         if (session && session.user && session.user.id) {
-            // Aquí podrías hacer cualquier lógica adicional para obtener información del usuario, si es necesario
-            setUsername(session.user.email); // o cualquier otro dato de sesión relevante
+            setUsername(session.user.email);
         } else {
-            Alert.alert("Error", "La sesión no está disponible. Por favor, inicia sesión de nuevo. uses");
+            Alert.alert("Error", "La sesión no está disponible. Por favor, inicia sesión de nuevo.");
         }
     }, [session]);
 
@@ -46,14 +44,12 @@ export default function FormularioScreen({route}) {
             return;
         }
 
-        // Asegúrate de que todos los campos requeridos estén definidos
         if (!data1.id_practica || !data1.grupo || !data1.ua || !data1.fecha || !data1.id_profesor) {
             Alert.alert("Error", "Por favor, completa todos los campos antes de confirmar.");
             return;
         }
 
-        data1.id_usuario = session.user.id; // Añadir el ID del usuario
-         // Añadir el nombre del profesor
+        data1.id_usuario = session.user.id;
 
         try {
             const { data, error } = await supabase
@@ -61,12 +57,15 @@ export default function FormularioScreen({route}) {
                 .insert([data1]);
             if (error) throw error;
             console.log("Data inserted:", data);
+            Alert.alert("Éxito", "Datos ingresados correctamente");
+            reset(); // Limpia el formulario
+            clearErrors(); // Limpia cualquier error
+            setSelectedStartDate(""); // Limpia la fecha seleccionada
         } catch (error) {
             console.error("Error inserting data:", error.message);
             Alert.alert("Error", `Error al insertar datos: ${error.message}`);
         }
     };
-
 
     return (
         <SafeAreaView style={styles.container}>
@@ -74,7 +73,6 @@ export default function FormularioScreen({route}) {
                 <View style= {styles.titleF}>
                     <Text style={styles.title}>Formulario</Text>
                 </View>
-                
                 
                 <Text style={styles.label}>Nombre del docente:</Text>
                 
@@ -112,7 +110,6 @@ export default function FormularioScreen({route}) {
                                 onChange(itemValue);
                                 setSelectedPractice(itemValue);
                             }}
-                            
                         >
                             <Picker.Item label="Seleccione una opción" value="" />
                             <Picker.Item label="Practica prueba" value="1" />
@@ -121,7 +118,6 @@ export default function FormularioScreen({route}) {
                             <Picker.Item label="Microbilogía" value="4" />
                         </Picker>
                         </View>
-                        
                     )}
                 />
 
@@ -222,7 +218,6 @@ const styles = StyleSheet.create({
         marginBottom: 3,
         marginTop: 5,
         marginStart: 10,
-        
     },
     input: {
         borderWidth: 1,
@@ -288,10 +283,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
-    titleF :{
+    titleF: {
         marginBottom: 25,
         marginTop: 20,
-        
     },
     input1: {
         borderWidth: 1,
