@@ -7,6 +7,8 @@ import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from 'react-hook-form';
 import DatePiker from 'react-native-modern-datepicker';
 import { Session } from '@supabase/supabase-js'
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function FormularioScreen({route}) {
     const { session } = route.params;
@@ -38,6 +40,8 @@ export default function FormularioScreen({route}) {
         borderColor: 'rgba(122,146,165,0.1)'
     }
 
+    const navigation = useNavigation();
+
     const onSubmit = async (data1) => {
         if (!session || !session.user.id) {
             Alert.alert("Error", "La sesión no está disponible. Por favor, inicia sesión de nuevo.");
@@ -58,9 +62,10 @@ export default function FormularioScreen({route}) {
             if (error) throw error;
             console.log("Data inserted:", data);
             Alert.alert("Éxito", "Datos ingresados correctamente");
-            reset(); // Limpia el formulario
-            clearErrors(); // Limpia cualquier error
-            setSelectedStartDate(""); // Limpia la fecha seleccionada
+            reset(); 
+            clearErrors(); 
+            setSelectedStartDate(""); 
+
         } catch (error) {
             console.error("Error inserting data:", error.message);
             Alert.alert("Error", `Error al insertar datos: ${error.message}`);

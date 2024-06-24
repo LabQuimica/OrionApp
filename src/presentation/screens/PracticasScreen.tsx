@@ -1,43 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from '../../../lib/supabase'; // Assuming supabase is initialized elsewhere
+import { supabase } from '../../../lib/supabase'; 
 import { Session } from '@supabase/supabase-js'
+
 const PracticasScreen = ({ route }) => {
   const { session } = route.params;
   const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
   const [touchableDimensions, setTouchableDimensions] = useState({ width: 0, height: 0 });
   const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
 
-
   useEffect(() => {
-    const fetchData = async () => {
-      if (!session?.user?.id) {
-        console.error('ID de usuario no disponible');
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('vales_2')
-          .select('id,practicas(id, nombre), fecha, estado, id_profesor')
-          .eq('id_usuario', session.user.id);
-
-        if (error) {
-          throw error;
-        }
-
-        setValesWithPracticas(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error('Error al obtener datos:', error.message);
-        } else {
-          console.error('Error desconocido al obtener datos');
-        }
-      }
-    };
-    fetchData();
+    fetchPractices();
   }, [session?.user?.id]);
+
+  const fetchPractices = async () => {
+    if (!session?.user?.id) {
+      console.error('ID de usuario no disponible');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('vales_2')
+        .select('id, practicas(id, nombre), fecha, estado, id_profesor')
+        .eq('id_usuario', session.user.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setValesWithPracticas(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error al obtener datos:', error.message);
+      } else {
+        console.error('Error desconocido al obtener datos');
+      }
+    }
+  };
 
   const getColorByState = (estado) => {
     switch (estado) {
@@ -56,25 +57,25 @@ const PracticasScreen = ({ route }) => {
     const { width, height } = event.nativeEvent.layout;
     setTouchableDimensions({ width, height });
   };
+
   const dynamicMargins = {
     marginHorizontal: touchableDimensions.width * 0.05, // Ejemplo: 5% del ancho
     marginVertical: touchableDimensions.height * 0.1, // Ejemplo: 5% del alto
     height: touchableDimensions.height * 0.8, // Ejemplo: 90% del alto
   };
 
-  const [count, setCount] = useState(0);
   const onPress = () => setOpenStartDatePiker(!openStartDatePicker);
+
   const renderItem = ({ item }) => (
     <TouchableOpacity style={[styles.itemContainer]} onPress={onPress} onLayout={onTouchableLayout}>
       <View style={[styles.itemContainer2, { backgroundColor: getColorByState(item.estado) }, dynamicMargins]}></View>
-      <Text style={styles.title} >Práctica: {item.practicas.nombre ?? 'N/A'}</Text>
+      <Text style={styles.title} >Práctica: {item.practicas?.nombre ?? 'N/A'}</Text>
       <Text style={styles.subtitle}>Fecha: {item.fecha ?? 'N/A'}</Text>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-
       <FlatList
         data={valesWithPracticas}
         renderItem={renderItem}
@@ -87,13 +88,12 @@ const PracticasScreen = ({ route }) => {
         visible={openStartDatePicker}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text>Despliegue de materiales por practica</Text>
+            <Text>Despliegue de materiales por práctica</Text>
             <TouchableOpacity style={styles.closeButton} onPress={() => setOpenStartDatePiker(false)}>
               <Text style={styles.closeButtonText}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
-
       </Modal>
     </SafeAreaView>
   );
@@ -106,11 +106,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  image: {
-    height: 300,
-    width: '100%',
-    resizeMode: 'cover',
-  },
   listContent: {
     padding: 20,
   },
@@ -120,7 +115,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#ccc',
-
   },
   title: {
     color: 'black',
@@ -139,8 +133,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-
-
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -168,7 +160,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-
   },
-}
-);
+});
