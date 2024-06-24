@@ -23,7 +23,7 @@ const PracticasScreen = ({ route }) => {
     try {
       const { data, error } = await supabase
         .from('vales_2')
-        .select('id, practicas(id, nombre), fecha, estado, id_profesor')
+        .select('id, practicas(id, nombre), fecha, estado, profesores(id, nombre)')
         .eq('id_usuario', session.user.id);
 
       if (error) {

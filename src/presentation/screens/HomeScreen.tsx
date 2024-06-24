@@ -14,8 +14,8 @@ const HomeScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
-          .from('vales')
-          .select('id, usuarios(id,nombre), practicas(id, nombre),fecha');
+          .from('vales_2')
+          .select('id, profesores(id,nombre), practicas(id, nombre),fecha');
         if (error) {
           throw error;
         }
@@ -61,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
           {eventsForSelectedDate.map((event, index) => (
             <View key={index} style={styles.event} >
               <Text style={styles.title}>{event.practicas.nombre}</Text>
-              <Text style={styles.subtitle}>{event.usuarios.nombre}</Text>
+              <Text style={styles.subtitle}>{event.profesores.nombre}</Text>
             </View>
           ))}
 
