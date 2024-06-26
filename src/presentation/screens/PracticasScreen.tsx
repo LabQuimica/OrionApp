@@ -102,7 +102,7 @@ const PracticasScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleF}>
-        <Text style={styles.title1}>Practicas</Text>
+        <Text style={styles.title1}>Prácticas</Text>
       </View>
       <Searchbar
         style={{ margin: 10, borderRadius: 20, elevation: 3, backgroundColor: '#fff', borderColor: '#ccc', marginHorizontal: 20 }}
