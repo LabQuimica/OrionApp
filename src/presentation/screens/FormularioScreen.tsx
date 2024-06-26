@@ -5,7 +5,7 @@ import { supabase } from '../../../lib/supabase';
 import { StyleSheet, TextInput, View, Text, ScrollView, Modal, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from 'react-hook-form';
-import DatePiker from 'react-native-modern-datepicker';
+import DatePicker from 'react-native-modern-datepicker';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -172,7 +172,7 @@ export default function FormularioScreen({route}) {
                                 visible={openStartDatePicker}>
                                 <View style={styles.modalContainer}>
                                     <View style={styles.modalContent}>
-                                        <DatePiker
+                                        <DatePicker
                                             mode="calendar"
                                             minimumDate={minStartDate.toISOString()}
                                             selected={selectedStartDate}
