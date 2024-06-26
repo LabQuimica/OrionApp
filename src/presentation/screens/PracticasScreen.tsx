@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from '../../../lib/supabase'; 
+import { supabase } from '../../../lib/supabase';
 import { Searchbar } from 'react-native-paper';
+import { parse, isValid, format } from 'date-fns';
 
 const PracticasScreen = ({ route }) => {
   const { session } = route.params;
-  const [valesWithPracticas, setValesWithPracticas] = useState<any[]>([]);
+  const [valesWithPracticas, setValesWithPracticas] = useState([]);
   const [openStartDatePicker, setOpenStartDatePiker] = useState(false);
   const [dimensions, setDimensions] = useState({});
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dimensions1, setDimensions1] = useState({});
 
   useEffect(() => {
     fetchPractices();
@@ -33,11 +35,7 @@ const PracticasScreen = ({ route }) => {
 
       setValesWithPracticas(data);
     } catch (error) {
-      if (error instanceof Error) {
-        console.error('Error al obtener datos:', error.message);
-      } else {
-        console.error('Error desconocido al obtener datos');
-      }
+      console.error('Error al obtener datos:', error.message);
     }
   };
 
@@ -70,10 +68,32 @@ const PracticasScreen = ({ route }) => {
 
   const onPress = () => setOpenStartDatePiker(!openStartDatePicker);
 
+  const tryParseDate = (input) => {
+    const formats = ['yyyy-MM-dd', 'dd-MM-yyyy', 'MM/dd/yyyy'];
+    for (const formatString of formats) {
+      const parsedDate = parse(input, formatString, new Date());
+      if (isValid(parsedDate)) {
+        return format(parsedDate, 'yyyy-MM-dd');
+      }
+    }
+    return input; // return the input if no date format matched
+  };
+
+  const filteredPractices = valesWithPracticas.filter(item => {
+    const practiceName = item.practicas?.nombre?.toLowerCase() || '';
+    const professorName = item.profesores?.nombre?.toLowerCase() || '';
+    const date = item.fecha || '';
+    const normalizedSearchQuery = tryParseDate(searchQuery.toLowerCase());
+
+    return practiceName.includes(searchQuery.toLowerCase()) ||
+      professorName.includes(searchQuery.toLowerCase()) ||
+      date.includes(normalizedSearchQuery);
+  });
+
   const renderItem = ({ item }) => (
     <TouchableOpacity style={[styles.itemContainer]} onPress={onPress} onLayout={(event) => onTouchableLayout(event, item.id)}>
       <View style={[styles.itemContainer2, { backgroundColor: getColorByState(item.estado) }, dynamicMargins(item.id)]}></View>
-      <Text style={styles.title} >Práctica: {item.practicas?.nombre ?? 'N/A'}</Text>
+      <Text style={styles.title}>Práctica: {item.practicas?.nombre ?? 'N/A'}</Text>
       <Text style={styles.subtitle}>Profesor: {item.profesores.nombre ?? 'N/A'}</Text>
       <Text style={styles.subtitle}>Fecha: {item.fecha ?? 'N/A'}</Text>
     </TouchableOpacity>
@@ -81,19 +101,25 @@ const PracticasScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text className="text-4xl font-bold text-blue-500 m-10 items-center justify-center">Prácticas</Text>
+      <View style={styles.titleF}>
+        <Text style={styles.title1}>Practicas</Text>
+      </View>
       <Searchbar
-      style={{ margin: 10, borderRadius: 20, elevation: 3, backgroundColor: '#fff', borderColor: '#ccc', marginHorizontal: 20}}
-      placeholder="Buscar"
-      onChangeText={setSearchQuery}
-      value={searchQuery}
-    />
-      <FlatList
-        data={valesWithPracticas}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContent}
+        style={{ margin: 10, borderRadius: 20, elevation: 3, backgroundColor: '#fff', borderColor: '#ccc', marginHorizontal: 20 }}
+        placeholder="Buscar"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
       />
+      {filteredPractices.length === 0 ? (
+        <Text style={styles.noPracticesText}>No existen prácticas que coincidan con la búsqueda</Text>
+      ) : (
+        <FlatList
+          data={filteredPractices}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listContent}
+        />
+      )}
       <Modal
         animationType='slide'
         transparent={true}
@@ -173,5 +199,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  noPracticesText: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 18,
+    marginTop: 20,
+  },
+  titleF: {
+    marginBottom: 10,
+    marginTop: 45,
+  },
+  title1: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
   },
 });
